@@ -4,7 +4,7 @@ from teamster.deanslist.schedules import (
     build_deanslist_multi_partition_asset_job_schedule,
     build_deanslist_static_partition_asset_job_schedule,
 )
-from teamster.kippcamden import CODE_LOCATION, LOCAL_TIMEZONE
+from teamster.kippcamden.config import CODE_LOCATION, LOCAL_TIMEZONE
 from teamster.kippcamden.deanslist.jobs import (
     multi_partition_fiscal_asset_job,
     multi_partition_monthly_asset_job,

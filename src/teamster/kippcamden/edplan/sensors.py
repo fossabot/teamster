@@ -1,5 +1,5 @@
 from teamster.edplan.sensors import build_sftp_sensor
-from teamster.kippcamden import CODE_LOCATION, LOCAL_TIMEZONE
+from teamster.kippcamden.config import CODE_LOCATION, LOCAL_TIMEZONE
 from teamster.kippcamden.edplan import assets
 
 sftp_sensor = build_sftp_sensor(

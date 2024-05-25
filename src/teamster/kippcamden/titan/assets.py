@@ -5,7 +5,7 @@ from dagster import StaticPartitionsDefinition, config_from_files
 
 from teamster.core.sftp.assets import build_sftp_asset
 from teamster.core.utils.classes import FiscalYear
-from teamster.kippcamden import CURRENT_FISCAL_YEAR, LOCAL_TIMEZONE
+from teamster.kippcamden.config import CURRENT_FISCAL_YEAR, LOCAL_TIMEZONE
 from teamster.kippcamden.titan.schema import ASSET_SCHEMA
 
 assets = []

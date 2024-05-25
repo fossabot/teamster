@@ -1,4 +1,4 @@
-from teamster.kippcamden import CODE_LOCATION, LOCAL_TIMEZONE
+from teamster.kippcamden.config import CODE_LOCATION, LOCAL_TIMEZONE
 from teamster.kippcamden.titan import assets
 from teamster.titan.sensors import build_titan_sftp_sensor
 

@@ -16,7 +16,6 @@ from teamster.core.resources import (
     get_io_manager_gcs_pickle,
 )
 from teamster.kippcamden import (
-    CODE_LOCATION,
     couchdrop,
     datagun,
     dbt,
@@ -26,14 +25,16 @@ from teamster.kippcamden import (
     powerschool,
     titan,
 )
+from teamster.kippcamden.config import CODE_LOCATION
 
-defs = Definitions(
+definitions = Definitions(
     executor=k8s_job_executor,
     assets=[
+        *datagun.assets,
         *load_assets_from_modules(modules=[dbt]),
         *load_assets_from_modules(
             key_prefix=CODE_LOCATION,
-            modules=[datagun, dbt, deanslist, edplan, pearson, powerschool, titan],
+            modules=[dbt, deanslist, edplan, pearson, powerschool, titan],
         ),
     ],
     schedules=[

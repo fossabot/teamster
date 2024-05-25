@@ -1,4 +1,4 @@
-from teamster.kippcamden import CODE_LOCATION, LOCAL_TIMEZONE
+from teamster.kippcamden.config import CODE_LOCATION, LOCAL_TIMEZONE
 from teamster.kippcamden.powerschool.assets import dcid_assets, partition_assets
 from teamster.powerschool.sis.sensors import build_powerschool_sensor
 

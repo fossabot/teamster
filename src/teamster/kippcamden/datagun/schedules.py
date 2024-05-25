@@ -1,6 +1,6 @@
 from dagster import ScheduleDefinition
 
-from teamster.kippcamden import LOCAL_TIMEZONE
+from teamster.kippcamden.config import LOCAL_TIMEZONE
 from teamster.kippcamden.datagun.jobs import powerschool_extract_asset_job
 
 powerschool_extract_assets_schedule = ScheduleDefinition(

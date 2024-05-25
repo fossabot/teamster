@@ -8,7 +8,7 @@ from dagster import (
 )
 
 from teamster.core.utils.classes import FiscalYearPartitionsDefinition
-from teamster.kippcamden import LOCAL_TIMEZONE
+from teamster.kippcamden.config import LOCAL_TIMEZONE
 from teamster.powerschool.sis.assets import build_powerschool_table_asset
 
 config_dir = pathlib.Path(__file__).parent / "config"

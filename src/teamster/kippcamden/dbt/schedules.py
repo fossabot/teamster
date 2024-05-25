@@ -1,5 +1,5 @@
 from teamster.core.dbt.schedules import build_dbt_code_version_schedule
-from teamster.kippcamden import CODE_LOCATION, LOCAL_TIMEZONE
+from teamster.kippcamden.config import CODE_LOCATION, LOCAL_TIMEZONE
 from teamster.kippcamden.dbt.assets import dbt_assets
 
 dbt_code_version_schedule = build_dbt_code_version_schedule(

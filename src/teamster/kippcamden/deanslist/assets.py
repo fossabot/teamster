@@ -12,7 +12,7 @@ from teamster.deanslist.assets import (
     build_deanslist_multi_partition_asset,
     build_deanslist_static_partition_asset,
 )
-from teamster.kippcamden import LOCAL_TIMEZONE
+from teamster.kippcamden.config import LOCAL_TIMEZONE
 from teamster.kippcamden.deanslist.schema import ASSET_SCHEMA
 
 static_partitions_def = StaticPartitionsDefinition(["120", "126", "130", "473", "652"])

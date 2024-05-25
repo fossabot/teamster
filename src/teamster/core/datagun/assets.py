@@ -302,7 +302,7 @@ def build_bigquery_extract_asset(
     dataset_config,
     file_config,
     destination_config,
-    bucket_name,
+    bucket_name: str,
     extract_job_config: dict | None = None,
     op_tags: dict | None = None,
 ):

@@ -1,5 +1,5 @@
 from teamster.core.couchdrop.sensors import build_couchdrop_sftp_sensor
-from teamster.kippcamden import CODE_LOCATION, LOCAL_TIMEZONE
+from teamster.kippcamden.config import CODE_LOCATION, LOCAL_TIMEZONE
 from teamster.kippcamden.pearson.assets import assets
 
 couchdrop_sftp_sensor = build_couchdrop_sftp_sensor(
