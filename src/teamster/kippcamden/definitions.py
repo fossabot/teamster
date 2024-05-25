@@ -29,29 +29,20 @@ from teamster.kippcamden import (
 
 defs = Definitions(
     executor=k8s_job_executor,
-    assets=load_assets_from_modules(
-        modules=[
-            datagun,
-            dbt,
-            deanslist,
-            edplan,
-            pearson,
-            powerschool,
-            titan,
-        ]
-    ),
+    assets=[
+        *load_assets_from_modules(modules=[dbt]),
+        *load_assets_from_modules(
+            key_prefix=CODE_LOCATION,
+            modules=[datagun, dbt, deanslist, edplan, pearson, powerschool, titan],
+        ),
+    ],
     schedules=[
         *datagun.schedules,
         *dbt.schedules,
         *deanslist.schedules,
         *powerschool.schedules,
     ],
-    sensors=[
-        *couchdrop.sensors,
-        *edplan.sensors,
-        *powerschool.sensors,
-        *titan.sensors,
-    ],
+    sensors=[*couchdrop.sensors, *edplan.sensors, *powerschool.sensors, *titan.sensors],
     resources={
         "gcs": GCS_RESOURCE,
         "deanslist": DEANSLIST_RESOURCE,

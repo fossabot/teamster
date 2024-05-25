@@ -29,17 +29,13 @@ from teamster.kippmiami import (
 
 defs = Definitions(
     executor=k8s_job_executor,
-    assets=load_assets_from_modules(
-        modules=[
-            datagun,
-            dbt,
-            deanslist,
-            fldoe,
-            iready,
-            powerschool,
-            renlearn,
-        ]
-    ),
+    assets=[
+        *load_assets_from_modules(modules=[dbt]),
+        *load_assets_from_modules(
+            key_prefix=CODE_LOCATION,
+            modules=[datagun, dbt, deanslist, fldoe, iready, powerschool, renlearn],
+        ),
+    ],
     schedules=[
         *datagun.schedules,
         *dbt.schedules,

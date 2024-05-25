@@ -35,27 +35,30 @@ from teamster.kipptaf import (
 
 defs = Definitions(
     executor=k8s_job_executor,
-    assets=load_assets_from_modules(
-        modules=[
-            adp,
-            airbyte,
-            alchemer,
-            amplify,
-            datagun,
-            dayforce,
-            dbt,
-            deanslist,
-            fivetran,
-            google,
-            ldap,
-            performance_management,
-            powerschool,
-            schoolmint,
-            smartrecruiters,
-            tableau,
-            zendesk,
-        ]
-    ),
+    assets=[
+        *load_assets_from_modules(modules=[dbt]),
+        *load_assets_from_modules(
+            key_prefix=CODE_LOCATION,
+            modules=[
+                adp,
+                airbyte,
+                alchemer,
+                amplify,
+                datagun,
+                dayforce,
+                deanslist,
+                fivetran,
+                google,
+                ldap,
+                performance_management,
+                powerschool,
+                schoolmint,
+                smartrecruiters,
+                tableau,
+                zendesk,
+            ],
+        ),
+    ],
     schedules=[
         *adp.schedules,
         *airbyte.schedules,
