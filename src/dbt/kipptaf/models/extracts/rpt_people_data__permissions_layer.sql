@@ -30,6 +30,7 @@ select
         then 3
         when job_title like '%Assistant School Leader%'
         then 2
+        /*your data, the people you manage*/
         else 1
     end as permissions_level,
 from {{ ref("base_people__staff_roster") }}
