@@ -21,7 +21,7 @@ select
         when
             job_title in (
                 'School Leader',
-                'School Leaders in Residence'
+                'School Leaders in Residence',
                 'Director School Operations',
                 'Director Campus Operatons'
             )
