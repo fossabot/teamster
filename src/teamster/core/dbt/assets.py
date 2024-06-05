@@ -2,13 +2,10 @@ import json
 
 from dagster import AssetExecutionContext, Output
 from dagster_dbt import DagsterDbtTranslator, DbtCliResource, dbt_assets
+from dagster_dbt.asset_utils import get_manifest_and_translator_from_dbt_assets
 from dagster_dbt.utils import dagster_name_fn
 
 from teamster.core.dbt.asset_decorator import dbt_external_source_assets
-
-
-def _dagster_name_fn(unique_id: str) -> str:
-    return unique_id.replace(".", "_").replace("-", "_").replace("*", "_star")
 
 
 def build_dbt_assets(
@@ -30,38 +27,60 @@ def build_dbt_assets(
         op_tags=op_tags,
     )
     def _assets(context: AssetExecutionContext, dbt_cli: DbtCliResource):
-        selected_views = set()
-        selected_others = set()
+        selected_views = {}
+        selected_others = []
+        code_version_change = []
+        code_version_same = []
 
-        # selected_views_child_map = {
-        #     _dagster_name_fn(unique_id): children
-        #     for unique_id, children in manifest["child_map"].items()
-        #     if _dagster_name_fn(unique_id) in context.selected_output_names
-        # }
+        manifest, dagster_dbt_translator = get_manifest_and_translator_from_dbt_assets(
+            [context.assets_def]
+        )
 
-        selected_asset_keys = set()
-        for unique_id_dagster_name in selected_views:
-            selected_asset_keys.add(
-                context.asset_key_for_output(unique_id_dagster_name)
-            )
+        for output_name in context.selected_output_names:
+            node: dict = [
+                {
+                    "dagster_name": dagster_name_fn(dbt_resource_props),
+                    **dbt_resource_props,
+                }
+                for dbt_resource_props in manifest["nodes"].values()
+                if dagster_name_fn(dbt_resource_props) == output_name
+            ][0]
 
-            # for child_unique_id in children:
-            #     selected_asset_keys.add(
-            #         context.asset_key_for_output(_dagster_name_fn(child_unique_id))
-            #     )
+            if node["config"]["materialized"] == "view":
+                selected_views[context.asset_key_for_output(node["dagster_name"])] = (
+                    node
+                )
+            else:
+                selected_others.append(node)
 
-        changed_code_versions = {
-            k: v
-            for k, v in context.instance.get_latest_materialization_code_versions(
-                asset_keys=selected_asset_keys
-            ).items()
-            if k in context.assets_def.code_versions_by_key
-            and context.assets_def.code_versions_by_key[k] != v
-        }
+        for (
+            asset_key,
+            code_version,
+        ) in context.instance.get_latest_materialization_code_versions(
+            asset_keys=selected_views.keys()
+        ).items():
+            if context.assets_def.code_versions_by_key[asset_key] != code_version:
+                code_version_change.append(selected_views[asset_key])
+            else:
+                code_version_same.append(selected_views[asset_key])
 
-        dbt_build = dbt_cli.cli(args=["build"], context=context)
+        selection = [
+            ".".join(node["fqn"]) for node in selected_others + code_version_change
+        ]
 
-        yield from dbt_build.stream()
+        dbt_build = dbt_cli.cli(
+            args=["build", "--select", " ".join(selection)],
+            manifest=manifest,
+            dagster_dbt_translator=dagster_dbt_translator,
+        )
+
+        for event in dbt_build.stream_raw_events():
+            context.log.info(event)
+
+        for output_name in context.selected_output_names:
+            yield Output(value=None, output_name=output_name)
+
+        # dagster._core.errors.DagsterInvariantViolationError: Asset "kipptaf/extracts/rpt_gsheets__kippfwd_collab_matriculation" was yielded before its dependency "kipptaf/kippadb/int_kippadb__roster".Multiassets yielding multiple asset outputs must yield them in topological order.
 
     return _assets
 
@@ -87,6 +106,10 @@ def build_dbt_external_source_assets(
         op_tags=op_tags,
     )
     def _assets(context: AssetExecutionContext, dbt_cli: DbtCliResource):
+        manifest, dagster_dbt_translator = get_manifest_and_translator_from_dbt_assets(
+            [context.assets_def]
+        )
+
         selection = [
             f"{dbt_resource_props["source_name"]}.{dbt_resource_props["name"]}"
             for dbt_resource_props in sources
