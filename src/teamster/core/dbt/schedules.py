@@ -28,12 +28,11 @@ def build_dbt_code_version_schedule(
             )
         )
 
-        asset_selection = []
-        for asset_key, current_code_version in dbt_assets.code_versions_by_key.items():
-            latest_code_version = latest_code_versions.get(asset_key)
-
-            if current_code_version != latest_code_version:
-                asset_selection.append(asset_key)
+        asset_selection = [
+            asset_key
+            for asset_key, code_version in dbt_assets.code_versions_by_key.items()
+            if code_version != latest_code_versions.get(asset_key)
+        ]
 
         if asset_selection:
             return RunRequest(run_key=schedule_name, asset_selection=asset_selection)

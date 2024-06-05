@@ -1,7 +1,12 @@
 import json
 import pathlib
 
-from dagster import AssetExecutionContext, AssetMaterialization, materialize
+from dagster import (
+    AssetExecutionContext,
+    AssetMaterialization,
+    DagsterInstance,
+    materialize,
+)
 from dagster_dbt import DbtCliResource, dbt_assets
 
 from teamster.core.dbt.dagster_dbt_translator import CustomDagsterDbtTranslator
@@ -73,6 +78,9 @@ def test_dbt_assets():
         assets=[dbt_assets],
         resources={"dbt_cli": get_dbt_cli_resource(code_location="kipptaf", test=True)},
         selection=["kipptaf/powerschool/base_powerschool__student_enrollments"],
+        instance=DagsterInstance.from_config(
+            config_dir=".dagster/home", config_filename="dagster-cloud.yaml"
+        ),
     )
 
     assert result.success
