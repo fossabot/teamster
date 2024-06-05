@@ -26,6 +26,12 @@ def build_dbt_assets(
         op_tags=op_tags,
     )
     def _assets(context: AssetExecutionContext, dbt_cli: DbtCliResource):
+        context.assets_def.code_versions_by_key
+        latest_code_versions = (
+            context.instance.get_latest_materialization_code_versions(
+                asset_keys=context.selected_asset_keys
+            )
+        )
         dbt_build = dbt_cli.cli(args=["build"], context=context)
 
         yield from dbt_build.stream()

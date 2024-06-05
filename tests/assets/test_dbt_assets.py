@@ -67,10 +67,12 @@ def _test_dbt_assets(context: AssetExecutionContext, dbt_cli: DbtCliResource):
 
 
 def test_dbt_assets():
+    from teamster.kipptaf.dbt.assets import dbt_assets
+
     result = materialize(
-        assets=[_test_dbt_assets],
+        assets=[dbt_assets],
         resources={"dbt_cli": get_dbt_cli_resource(code_location="kipptaf", test=True)},
-        selection=["kipptaf/tableau/rpt_tableau__assessment_dashboard"],
+        selection=["kipptaf/powerschool/base_powerschool__student_enrollments"],
     )
 
     assert result.success
