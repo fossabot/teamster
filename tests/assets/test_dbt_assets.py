@@ -120,7 +120,6 @@ def test_dbt_assets():
             "kipptaf/tableau/rpt_tableau__kfwd_persistence",
             "kipptaf/tableau/rpt_tableau__kfwd_spi",
             "kipptaf/tableau/rpt_tableau__kfwd_verification",
-            "kipptaf/tableau/rpt_tableau__state_assessments_dashboard_nj_preelim",
             "kipptaf/zendesk/int_zendesk__ticket_metrics_union",
             "kipptaf/zendesk/stg_zendesk__ticket_audits__events",
             "kipptaf/zendesk/stg_zendesk__ticket_metrics_archive",

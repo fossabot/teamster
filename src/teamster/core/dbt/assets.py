@@ -1,8 +1,7 @@
 import json
 
 from dagster import AssetExecutionContext, Output
-from dagster_dbt import DagsterDbtTranslator, DbtCliResource, dbt_assets
-from dagster_dbt.asset_utils import get_manifest_and_translator_from_dbt_assets
+from dagster_dbt import DbtCliResource, dbt_assets
 from dagster_dbt.utils import dagster_name_fn
 
 from teamster.core.dbt.asset_decorator import dbt_external_source_assets
@@ -31,10 +30,6 @@ def build_dbt_assets(
         selected_others = []
         code_version_change = []
         code_version_same = []
-
-        manifest, dagster_dbt_translator = get_manifest_and_translator_from_dbt_assets(
-            [context.assets_def]
-        )
 
         for output_name in context.selected_output_names:
             node: dict = [
@@ -87,15 +82,13 @@ def build_dbt_assets(
 
 def build_dbt_external_source_assets(
     manifest,
-    dagster_dbt_translator: DagsterDbtTranslator,
+    dagster_dbt_translator,
     select="fqn:*",
     exclude=None,
     partitions_def=None,
     name=None,
     op_tags=None,
 ):
-    sources = manifest["sources"].values()
-
     @dbt_external_source_assets(
         manifest=manifest,
         select=select,
@@ -106,17 +99,12 @@ def build_dbt_external_source_assets(
         op_tags=op_tags,
     )
     def _assets(context: AssetExecutionContext, dbt_cli: DbtCliResource):
-        manifest, dagster_dbt_translator = get_manifest_and_translator_from_dbt_assets(
-            [context.assets_def]
-        )
-
         selection = [
             f"{dbt_resource_props["source_name"]}.{dbt_resource_props["name"]}"
-            for dbt_resource_props in sources
+            for dbt_resource_props in manifest["sources"].values()
             if dagster_name_fn(dbt_resource_props) in context.selected_output_names
         ]
 
-        # run dbt stage_external_sources
         dbt_run_operation = dbt_cli.cli(
             args=[
                 "run-operation",
