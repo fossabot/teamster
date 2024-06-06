@@ -1,3 +1,5 @@
+{% set academic_year = "2021" %}  -- CHANGE YEAR HERE ONLY
+
 with
     ms_grad as (
         select
@@ -51,7 +53,7 @@ with
             e.rn_year = 1
             and e.region in ('Camden', 'Newark')
             and e.schoolid != 999999
-            and e.academic_year >= 2022
+            and e.academic_year >= {{ academic_year }}
             and e.grade_level > 2
     ),
 
@@ -80,7 +82,7 @@ with
             e.rn_credittype_year = 1
             and not e.is_dropped_section
             and e.courses_credittype in ('ENG', 'MATH', 'SCI', 'SOC')
-            and e.cc_academic_year >= 2022
+            and e.cc_academic_year >= {{ academic_year }}
     ),
 
     assessments_nj as (
@@ -237,6 +239,6 @@ left join
     and a.test_code = c.test_code
 left join
     {{ ref("stg_assessments__academic_goals") }} as g
-    on s.academic_year = g.academic_year
+    on s.academic_year = g.academic_year - 2  -- REMOVE THIS WHEN DONE
     and s.schoolid = g.school_id
     and a.test_code = g.state_assessment_code
