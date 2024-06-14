@@ -9,8 +9,8 @@ from dagster import (
 )
 from dagster_dbt import DbtCliResource, dbt_assets
 
-from teamster.core.dbt.dagster_dbt_translator import CustomDagsterDbtTranslator
-from teamster.core.resources import get_dbt_cli_resource
+from teamster.libraries.core.resources import get_dbt_cli_resource
+from teamster.libraries.dbt.dagster_dbt_translator import CustomDagsterDbtTranslator
 
 MANIFEST = json.loads(
     s=pathlib.Path("src/dbt/kipptaf/target/manifest.json").read_text()
@@ -131,7 +131,7 @@ def test_dbt_assets():
 
 
 def test_external_source_dbt_assets():
-    from teamster.kipptaf.dbt.assets import external_source_dbt_assets
+    from teamster.code_locations.kipptaf.dbt.assets import external_source_dbt_assets
 
     result = materialize(
         assets=[external_source_dbt_assets],
