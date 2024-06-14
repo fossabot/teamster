@@ -72,7 +72,7 @@ def _test_dbt_assets(context: AssetExecutionContext, dbt_cli: DbtCliResource):
 
 
 def test_dbt_assets():
-    from teamster.kipptaf.dbt.assets import dbt_assets
+    from teamster.code_locations.kipptaf.dbt.assets import dbt_assets
 
     result = materialize(
         assets=[dbt_assets],
